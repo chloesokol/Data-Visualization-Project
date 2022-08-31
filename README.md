@@ -1,1 +1,1 @@
-# Data-Visualization-Project
+STAT 302 final projects (completed in R): (1) California wildfires visualization poster ("1799_challenge_4.html)" and (2) Georgia 2020 Presidential Election Results shiny app ( https://chloesokol.shinyapps.io/1799_m02/)
