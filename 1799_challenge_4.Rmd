@@ -1,0 +1,100 @@
+---
+title: California Wildfires - When, Where, and How Often (2013-2019)
+author:
+  - name: Chloe Sokol
+    affil: 1
+affiliation:
+  - num: 1
+    address: Department of Statistics and Data Science, Northwestern University
+column_numbers: 3
+primary_colour: "orange"
+logoright_name: northwestern_seal.png
+logoleft_name: Flag_of_California.svg.png
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+bibliography: packages.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r, include = FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+# Introduction
+
+California is the most wildfire-prone state in the United States. Last year alone, over 9,000 wildfires occurred in the state, devastating 2.23 million acres. Overall, California accounted for roughly 31 percent of all acres burned in 2021 due to wildland fires in the country. The statistics that follow use data of wildfires between 2013-2019 to answer the questions "when?", "where?", and "how often?" for California's wildfires. 
+
+<br>
+
+# When are wildfires most prevelant? 
+
+Figure \@ref(fig:plot-bar) and Table \@ref(tab:table-one) below shows the breakdown of total acres burned by California wildfires in 2013 to 2019 by month. It is evident that July typically has the most acres burned by wildfires, followed by August, and then September. It should be noted that July is also the hottest and dryest month for the state.
+
+```{r plot-bar, out.width = "100%", fig.cap = "Distribution of acres burned by month and year."}
+knitr::include_graphics("bar_plot.png")
+```
+
+<br><br><br><br><br>
+
+```{r table-one, message=FALSE}
+read_csv("data/cali_fire.csv") %>% 
+  mutate(Started = mdy_hm(Started)) %>%
+  mutate(Month = month(Started, abbr = FALSE, label = TRUE)) %>%
+  mutate(ArchiveYear = as.factor(ArchiveYear)) %>% 
+  count(Month, ArchiveYear, wt = AcresBurned, name = "AcresBurned") %>%
+  pivot_wider(names_from = ArchiveYear, values_from = AcresBurned) %>%
+  select(Month, "2013", "2014", "2015", "2016", "2017", "2018", "2019") %>%
+  knitr::kable(caption = "Count of California wildfires by month and year.",
+               table.attr = "style='width:100%;'") %>%
+  kableExtra::kable_styling()
+```
+
+
+<br>
+
+# Where do wildfires occur?
+
+Figure \@ref(fig:plot-map) below shows the distribution and density of wildfires among the California counties. From the map we can see that the two most dense areas are in north-central California and southern California. 
+
+```{r plot-map, out.width = "100%", fig.cap = "Density of wildfires by county."}
+knitr::include_graphics("heat_map.png")
+```
+
+
+# How often do wildfires occur?
+
+Figure \@ref(fig:plot-scatterplot) below shows the total count of wildfires broken down by year and categorization as a major or minor incident. Most wildfires are considered minor incidents, and both the most minor and most major wildfires occurred in 2017, followed by 2018. Table \@ref(tab:table-two) shows an interesting observation that the most acres burned was during 2018 even though that year did not have the highest count of wildfires. The major wildfires are likely have been very severe that year.
+
+```{r plot-scatterplot, out.width = "100%", fig.cap = "Distribution of wildfires by year and major or minor incident. "}
+knitr::include_graphics("scatterplot.png")
+```
+
+<br>
+
+```{r table-two}
+tribble(
+  ~"Wildfire", ~"2013",  ~"2014", ~"2015", ~"2016", ~"2017", ~"2018", ~"2019",
+  "Minor", "100",  "43", "55", "110", "338", "236", "233",
+  "Major", "38",  "28", "37", "43", "88", "64", "29") %>%
+  knitr::kable(caption = "Count of minor and major wildfires per year.",
+               table.attr = "style='width:100%;'") %>%
+  kableExtra::kable_styling()
+```
+
+<br>
+
+# References
+
+https://www.predictiveservices.nifc.gov/intelligence/2021_statssumm/annual_report_2021.pdf.
+
+https://www.kaggle.com/datasets/ananthu017/california-wildfire-incidents-20132020.
+
+
+
+
